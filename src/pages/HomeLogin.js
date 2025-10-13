@@ -141,7 +141,7 @@ export default function HomeLogin() {
 					>
 						<div>
 							<h1 className="text-white fw-bold mt-4 ms-3">
-								Halo, {User.nama}
+								Halo, {User?.nama || 'User'}
 							</h1>
 							<h4 className="text-white mt-3 ms-3">Apa kabar?</h4>
 						</div>
@@ -175,7 +175,7 @@ export default function HomeLogin() {
 														  HistoryState.tracking.tracking
 														? data(
 																HistoryState.tracking.tracking.totKalori,
-																User.kaloriYgDibutuhkan.toFixed(0)
+																(User?.kaloriYgDibutuhkan || 0).toFixed(0)
 														  )
 														: data(0, 100)
 												}
@@ -195,13 +195,13 @@ export default function HomeLogin() {
 														<h1 className="d-none d-md-block">
 															{(
 																(HistoryState.tracking.tracking.totKalori /
-																	User.kaloriYgDibutuhkan.toFixed(0)) *
+																	(User?.kaloriYgDibutuhkan || 1).toFixed(0)) *
 																100
 															).toFixed(0) > 100
 																? 100
 																: (
 																		(HistoryState.tracking.tracking.totKalori /
-																			User.kaloriYgDibutuhkan.toFixed(0)) *
+																			(User?.kaloriYgDibutuhkan || 1).toFixed(0)) *
 																		100
 																  ).toFixed(0)}{" "}
 															%
@@ -209,13 +209,13 @@ export default function HomeLogin() {
 														<h5 className="d-block d-md-none">
 															{(
 																(HistoryState.tracking.tracking.totKalori /
-																	User.kaloriYgDibutuhkan.toFixed(0)) *
+																	(User?.kaloriYgDibutuhkan || 1).toFixed(0)) *
 																100
 															).toFixed(0) > 100
 																? 100
 																: (
 																		(HistoryState.tracking.tracking.totKalori /
-																			User.kaloriYgDibutuhkan.toFixed(0)) *
+																			(User?.kaloriYgDibutuhkan || 1).toFixed(0)) *
 																		100
 																  ).toFixed(0)}{" "}
 															%
@@ -236,25 +236,25 @@ export default function HomeLogin() {
 											</div>
 										</div>
 									</div>
-									<div className="col-6 col-md-7 col-lg-4 d-flex justify-content-evenly justify-content-lg-end mmt-0 mt-md-4 ">
-										<div>
-											<h5 className="text-danger">Dibutuhkan</h5>
-											<h5>
-												{UserLoading ? 0 : User.kaloriYgDibutuhkan.toFixed(0)}{" "}
-												Kkal
-											</h5>
-											<h5 className="text-primary mt-5">Terpenuhi</h5>
-											<h5>
-												{loading
-													? 0
-													: HistoryState.tracking &&
-													  HistoryState.tracking.tracking
-													? HistoryState.tracking.tracking.totKalori
-													: 0}{" "}
-												Kkal
-											</h5>
-										</div>
-									</div>
+							<div className="col-6 col-md-7 col-lg-4 d-flex justify-content-evenly justify-content-lg-end mmt-0 mt-md-4 ">
+								<div>
+									<h5 className="text-danger">Dibutuhkan</h5>
+									<h5>
+										{UserLoading ? 0 : (User?.kaloriYgDibutuhkan || 0).toFixed(0)}{" "}
+										Kkal
+									</h5>
+									<h5 className="text-primary mt-5">Terpenuhi</h5>
+									<h5>
+										{loading
+											? 0
+											: HistoryState.tracking &&
+											  HistoryState.tracking.tracking
+											? HistoryState.tracking.tracking.totKalori
+											: 0}{" "}
+										Kkal
+									</h5>
+								</div>
+							</div>
 								</div>
 							</div>
 							<div className="d-none d-lg-block col-lg-6">
@@ -263,11 +263,11 @@ export default function HomeLogin() {
 										grid={"item-1"}
 										angka={
 											loading
-												? 0
-												: HistoryState.tracking
-												? HistoryState.tracking.totKarbohidrat.toFixed(1) +
+												? "0 gr"
+												: HistoryState.tracking?.totKarbohidrat
+												? (HistoryState.tracking.totKarbohidrat || 0).toFixed(1) +
 												  " gr"
-												: 0 + " gr"
+												: "0 gr"
 										}
 										colors={"#FFECB3"}
 										image={
@@ -279,10 +279,10 @@ export default function HomeLogin() {
 										grid={"item-2"}
 										angka={
 											loading
-												? 0
-												: HistoryState.tracking
-												? HistoryState.tracking.totProtein.toFixed(1) + " gr"
-												: 0 + " gr"
+												? "0 gr"
+												: HistoryState.tracking?.totProtein
+												? (HistoryState.tracking.totProtein || 0).toFixed(1) + " gr"
+												: "0 gr"
 										}
 										colors={"#8CD2F5"}
 										image={
@@ -294,10 +294,10 @@ export default function HomeLogin() {
 										grid={"item-3"}
 										angka={
 											loading
-												? 0
-												: HistoryState.tracking
-												? HistoryState.tracking.totLemak.toFixed(1) + " gr"
-												: 0 + " gr"
+												? "0 gr"
+												: HistoryState.tracking?.totLemak
+												? (HistoryState.tracking.totLemak || 0).toFixed(1) + " gr"
+												: "0 gr"
 										}
 										colors={"#F89D89"}
 										image={
@@ -309,12 +309,11 @@ export default function HomeLogin() {
 										grid={"item-4"}
 										angka={
 											loading
-												? 0
-												: HistoryState.tracking &&
-												  HistoryState.tracking.tracking
-												? HistoryState.tracking.tracking.totKarbon.toFixed(1) +
+												? "0 kg"
+												: HistoryState.tracking?.tracking?.totKarbon
+												? (HistoryState.tracking.tracking.totKarbon || 0).toFixed(1) +
 												  " kg"
-												: 0 + " kg"
+												: "0 kg"
 										}
 										colors={"#E1E1E1"}
 										image={

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo_awal from "../images/Opening.png";
 import "../style/SignIn.css";
 import Layout from "../layouting/Layout";
@@ -38,52 +38,46 @@ export default function SignIn() {
   const onSubmit = async (data) => {
     setDisabled(true)
     const body = {
-      no_hp: data.telepon.replace("+62", "0"),
+      email: data.email,
       password: data.password,
     };
     
     const { REACT_APP_API_URL } = process.env;
     console.log('🔗 API URL:', REACT_APP_API_URL);
-    console.log('📤 User login data:', body);
+    console.log('📤 Login data:', body);
     
     try {
-      const result = await axios.post(`${REACT_APP_API_URL}/users/login`, body);
+      const result = await axios.post(`${REACT_APP_API_URL}/admin/login`, body);
       console.log('📥 Login response:', result.data);
       
       const { token } = result.data;
       if (token) {
         setDisabled(false)
         setCookie("token", token);
-        console.log('✅ User login successful, redirecting...');
-        Navigate("/");
-      } else if(result.data === "user is not exist") {
-        setDisabled(false)
-        setAlert(true)
-        setAlertmsg("Nomor telepon belum terdaftar")
-      } else if(result.data === "invalid") {
-        setDisabled(false)
-        setAlert(true)
-        setAlertmsg("Password salah")
+        console.log('✅ Admin login successful, redirecting to dashboard...');
+        Navigate("/admin/dashboard");
       } else {
         setDisabled(false)
         setAlert(true)
-        setAlertmsg("Login gagal, silakan coba lagi")
+        setAlertmsg("Login gagal, periksa kredensial Anda")
       }
     } catch (error) {
       setDisabled(false)
-      console.error('❌ User login error:', error);
+      console.error('❌ Login error:', error);
       console.error('📄 Error response:', error.response?.data);
       
-      setAlert(true)
-      if (error.response?.status === 500) {
-        setAlertmsg("Terjadi kesalahan server")
+      if (error.response?.status === 404) {
+        setAlert(true)
+        setAlertmsg("Admin tidak ditemukan")
+      } else if (error.response?.status === 401) {
+        setAlert(true)
+        setAlertmsg("Password salah")
       } else {
+        setAlert(true)
         setAlertmsg("Terjadi kesalahan, silakan coba lagi")
       }
     }
   };
-  
-  
 
   return (
     <Layout>
@@ -97,7 +91,7 @@ export default function SignIn() {
                     <div className="row justify-content-center py-md-0 py-5">
                       <div className="text-center d-md-none">
                         <h3>Masuk</h3>
-                        <p className="text-secondary mt-1 mb-2">Selamat datang di Nutziverse</p>
+                        <p className="text-secondary mt-1 mb-2">Login admin</p>
                       </div>
                       <div className="col-lg-5 col-md-5 col-7 p-2 my-auto">
                         <img src={logo_awal} className="img-fluid w-100" alt="property pict" />
@@ -106,7 +100,7 @@ export default function SignIn() {
                       <div className="col-lg-5 col-md-6 col-12 p-lg-5 px-4 pe-lg-2 py-md-5">
                         <div className="mb-4 d-none d-md-block">
                           <h2 className="">Masuk</h2>
-                          <p className="text-secondary mt-1">Selamat datang di Nutziverse</p>
+                          <p className="text-secondary mt-1">login admin</p>
                         </div>
                         {/* Alert */}
                         <div className={`alert alert-danger align-items-center mt-4 ${alert ? "show" : "d-none"}`} role="alert">
@@ -116,31 +110,29 @@ export default function SignIn() {
                         <form noValidate onSubmit={handleSubmit(onSubmit)} id="loginForm">
                           <div className="mb-3">
                             <label htmlFor="text" className="form-label">
-                              Nomor telepon
+                            Email
                             </label>
                             <div className="input-group mb-1">
                               <span className="input-group-text" id="basic-addon1">
                                 <i className="far fa-at"></i>
                               </span>
                               <input
-                                type="text"
-                                className={`form-control ${errors.telepon && "invalid"}`}
-                                {...register("telepon", {
-                                  required: "Nomor Telepon tidak boleh kosong",
-                                  pattern: {
-                                    value: /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/i,
-                                    message: "Nomor Telepon tidak valid",
-                                  },
+                                className={`form-control ${errors.email && "invalid"}`}
+                                {...register("email", {
+                                required: "Alamat Email tidak boleh kosong",
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                    message: "Alamat Email tidak valid",
+                                },
                                 })}
-                                placeholder="Nomor Telepon"
-                                id="Telepon"
+                                placeholder="Alamat Email"
+                                id="email"
                                 autoComplete="off"
                                 onKeyUp={() => {
-                                  trigger("telepon");
+                                trigger("email");
                                 }}
                               />
                             </div>
-                            {errors.telepon && <small className="text-danger">{errors.telepon.message}</small>}
                           </div>
 
                           <div className="mb-2">
@@ -182,14 +174,6 @@ export default function SignIn() {
                             </button>
                           </div>
                         </form>
-                        <div className="text-center mt-4">
-                          <p className="mb-0">
-                            Belum punya akun?{" "}
-                            <Link to="/sign-up" className="text-primary text-decoration-none">
-                              Daftar
-                            </Link>
-                          </p>
-                        </div>
                       </div>
                     </div>
                   </div>

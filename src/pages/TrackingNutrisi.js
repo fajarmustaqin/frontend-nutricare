@@ -55,21 +55,21 @@ export default function TrackingNutrisi() {
   let karbohidrat = 0, protein = 0, lemak = 0
   let butuhkarbohidrat = 0, butuhprotein = 0, butuhlemak = 0
 
-  if(!loading && tracking && User) {
-    butuhkarbohidrat = Number(User.gizi.karbohidrat.toFixed(2))
-    butuhprotein = Number(User.gizi.protein.toFixed(2))
-    butuhlemak = Number(User.gizi.lemak.toFixed(2))
+  if(!loading && tracking && User?.gizi) {
+    butuhkarbohidrat = Number((User.gizi?.karbohidrat || 0).toFixed(2))
+    butuhprotein = Number((User.gizi?.protein || 0).toFixed(2))
+    butuhlemak = Number((User.gizi?.lemak || 0).toFixed(2))
 
-    karbohidrat = tracking.totKarbohidrat
-    karbohidrat = karbohidrat/User.gizi.karbohidrat * 100
+    karbohidrat = tracking.totKarbohidrat || 0
+    karbohidrat = User.gizi?.karbohidrat ? karbohidrat/User.gizi.karbohidrat * 100 : 0
     karbohidrat = Number(karbohidrat.toFixed(2))
     
-    protein = tracking.totProtein
-    protein = protein/User.gizi.protein * 100
+    protein = tracking.totProtein || 0
+    protein = User.gizi?.protein ? protein/User.gizi.protein * 100 : 0
     protein = Number(protein.toFixed(2))
     
-    lemak = tracking.totLemak
-    lemak = lemak/User.gizi.lemak * 100
+    lemak = tracking.totLemak || 0
+    lemak = User.gizi?.lemak ? lemak/User.gizi.lemak * 100 : 0
     lemak = Number(lemak.toFixed(2))
   }
 

@@ -114,7 +114,7 @@ export default function TrackingKarbon() {
             <div className="card-body">
               <div className="row gy-4 pt-3">
                 <div className="col-12">
-                  <p className="fs-2 mb-0 fw-bold"><span className="fa"><i class="fas fa-cloud-meatball"></i></span> {!loading && tracking.tracking  ? tracking.tracking.totKarbon.toFixed(2) : 0}</p>
+                  <p className="fs-2 mb-0 fw-bold"><span className="fa"><i className="fas fa-cloud-meatball"></i></span> {!loading && tracking?.tracking?.totKarbon ? tracking.tracking.totKarbon.toFixed(2) : 0}</p>
                   <p className="fs-6 fw-medium">kg CO<sub>2</sub></p>
                 </div>
               </div>
@@ -124,7 +124,7 @@ export default function TrackingKarbon() {
 
         {loading ? (
           <LoadingComponent customstyle="" />
-        ) : tracking && tracking.tracking ? (
+        ) : tracking?.tracking?.makanan ? (
           <TrackingSection
             makanan={tracking.tracking.makanan}
           ></TrackingSection>

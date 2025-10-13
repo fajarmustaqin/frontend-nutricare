@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import GoogleLogin from "react-google-login";
-import google from "../images/google.png";
 import Layout from "../layouting/Layout";
 import "../style/SignUp.css";
 import axios from "axios";
@@ -22,6 +20,7 @@ export default function SignUp() {
   
   let Navigate = useNavigate();
   const [alert, setAlert] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
   const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
@@ -37,14 +36,22 @@ export default function SignUp() {
 
   const onSubmit = async (data) => {
     setDisabled(true)
+    console.log('📤 Registration form data:', data);
+    
     let { nama_lengkap, no_hp, password, konfirmasi_password, berat, tinggi, umur, aktivitasFisik, jeniskelamin } = data;
+    
+    // Validate password confirmation
     if (konfirmasi_password !== password) {
       setDisabled(false)
       setError("konfirmasi_password", {
         message: "Password tidak sesuai",
       });
-    } else {
+      return;
+    }
+
+    try {
       if (google_cookie) {
+        // Google registration
         const body = {
           email: google_cookie,
           jeniskelamin: jeniskelamin,
@@ -54,15 +61,23 @@ export default function SignUp() {
           aktivitasFisik: aktivitasFisik,
         };
         
-        const { data } = await axios.patch(`${REACT_APP_API_URL}/users/register/google`, body);
-        if (data.message === "success") {
+        console.log('📤 Google registration data:', body);
+        const response = await axios.patch(`${REACT_APP_API_URL}/users/register/google`, body);
+        console.log('📥 Google registration response:', response.data);
+        
+        if (response.data.message === "success") {
           setDisabled(false)
           document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          setCookie("token", data.token);
-          
+          setCookie("token", response.data.token);
+          console.log('✅ Google registration successful, redirecting...');
           Navigate("/");
+        } else {
+          setDisabled(false)
+          setAlert(true);
+          setAlertMsg("Registrasi Google gagal, silakan coba lagi");
         }
       } else {
+        // Regular registration
         no_hp = no_hp.replace("+62", "0");
         const body = {
           nama: nama_lengkap,
@@ -75,51 +90,41 @@ export default function SignUp() {
           aktivitasFisik: aktivitasFisik,
         };
         
-        const { data } = await axios.post(`${REACT_APP_API_URL}/users/register`, body);
+        console.log('📤 Regular registration data:', body);
+        const response = await axios.post(`${REACT_APP_API_URL}/users/register`, body);
+        console.log('📥 Registration response:', response.data);
         
-        if (data.message === "success") {
+        if (response.data.message === "success") {
           setDisabled(false)
-          setCookie("token", data.token);
-          
+          setCookie("token", response.data.token);
+          console.log('✅ Registration successful, redirecting...');
           Navigate("/");
+        } else if (response.data === "duplicate email") {
+          setDisabled(false)
+          setAlert(true);
+          setAlertMsg("Nomor telepon sudah terdaftar");
+          console.log('⚠️ Duplicate phone number');
         } else {
           setDisabled(false)
           setAlert(true);
+          setAlertMsg("Registrasi gagal, silakan coba lagi");
+          console.log('⚠️ Registration failed:', response.data);
         }
       }
-    }
-    
-    
-  };
-
-  const responseGoogle = async (authResult) => {
-    setDisabled(true)
-    try {
-      if (authResult) {
-        const result = await axios.post(`${process.env.REACT_APP_API_URL}/users/auth/google`, authResult);
-
-        const { message } = result.data;
-
-        if (message === "welcome") {
-          setDisabled(false)
-          const { token } = result.data;
-          setCookie("token", token);
-          Navigate("/");
-        } else {
-          setDisabled(false)
-          setCookie("email", result.data.result.email);
-          Navigate("/sign-up");
-        }
-        
-        return result;
-      } else {
-        setDisabled(false)
-        throw new Error(authResult);
-      }
-    } catch (e) {
+    } catch (error) {
       setDisabled(false)
+      console.error('❌ Registration error:', error);
+      console.error('📄 Error response:', error.response?.data);
+      
+      if (error.response?.data?.err) {
+        console.log('Server error:', error.response.data.err);
+      }
+      
+      setAlert(true);
+      setAlertMsg("Terjadi kesalahan server, silakan coba lagi");
     }
   };
+
 
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisiblity = () => {
@@ -137,9 +142,9 @@ export default function SignUp() {
           </div>
         </div>
 
-        {/* Alert */}
+        {        /* Alert */}
         <div className={`alert alert-danger align-items-center mt-4 ${alert ? "show" : "d-none"}`} role="alert">
-          <div>No Telepon sudah terdaftar</div>
+          <div>{alertMsg || "Terjadi kesalahan, silakan coba lagi"}</div>
         </div>
 
         {/* Isi Content */}
@@ -194,9 +199,9 @@ export default function SignUp() {
                     placeholder="Kata Sandi"
                     {...register("password", {
                       required: "Password tidak boleh kosong",
-                      pattern: {
-                        value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-                        message: "Min. 8 karakter, huruf dan angka",
+                      minLength: {
+                        value: 6,
+                        message: "Password minimal 6 karakter",
                       },
                     })}
                   ></input>
@@ -214,10 +219,6 @@ export default function SignUp() {
                     placeholder="Konfirmasi Kata Sandi"
                     {...register("konfirmasi_password", {
                       required: "Konfirmasi Password tidak boleh kosong",
-                      pattern: {
-                        value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-                        message: "Kata sandi tidak cocok",
-                      },
                     })}
                   ></input>
                   {errors.konfirmasi_password && <small className="text-danger">{errors.konfirmasi_password.message}</small>}
@@ -358,36 +359,6 @@ export default function SignUp() {
           </div>
         </form>
 
-        {google_cookie ? null : (
-          <>
-            <div className="row">
-              <div className="col-12 mt-4 text-center">
-                <p className="" style={{ color: "#6E6E6E", fontSize: "20px" }}>
-                  atau
-                </p>
-              </div>
-            </div>
-            <div className="row justify-content-center">
-              <div className="col-12 col-md-9 col-lg-5 mt-3 text-center">
-                <GoogleLogin
-                  clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                  render={(props) => (
-                    <div className={`d-grid col-12 mt-md-3 mt-2`} onClick={props.onClick}>
-                      <Button type="submit" btnclass={`btn btn-sm btn-main btn-google ${disabled ? 'disabled' : ''}`}>
-                        <img src={google} style={{ height: "16px", marginRight: "10px" }} alt=""></img>
-                        Daftar dengan Google
-                      </Button>
-                    </div>
-                  )}
-                  buttonText="Login with google"
-                  onSuccess={responseGoogle}
-                  onFailure={responseGoogle}
-                  cookiePolicy="single_host_origin"
-                />
-              </div>
-            </div>
-          </>
-        )}
 
         <div className="row">
           <div className="col-12 mt-5 text-center">
