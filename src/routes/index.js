@@ -20,6 +20,7 @@ import AdminFoodManagement from "../pages/AdminFoodManagement";
 import AdminWeeklyPlan from "../pages/AdminWeeklyPlan";
 import AdminDiseaseTemplate from "../pages/AdminDiseaseTemplate";
 import AdminPatientAssignment from "../pages/AdminPatientAssignment";
+import AdminResepManagement from "../pages/AdminResepManagement";
 import { ProtectedRoute, AdminRoute, PublicOnlyRoute } from "../components/ProtectedRoute";
 
 export default function Routers() {
@@ -51,6 +52,7 @@ export default function Routers() {
       <Route path="/admin/disease-template" element={<AdminRoute><AdminDiseaseTemplate /></AdminRoute>}></Route>
       <Route path="/admin/patient-assignment" element={<AdminRoute><AdminPatientAssignment /></AdminRoute>}></Route>
       <Route path="/admin/weekly-plan" element={<AdminRoute><AdminWeeklyPlan /></AdminRoute>}></Route>
+      <Route path="/admin/resep-management" element={<AdminRoute><AdminResepManagement /></AdminRoute>}></Route>
       
       {/* Fallback Routes */}
       <Route path="/unauthorized" element={<NotFound notfound={false}/>}></Route>

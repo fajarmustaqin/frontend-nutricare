@@ -61,12 +61,12 @@ export default function AdminDashboard() {
 
   const quickActions = [
     {
-      title: "Buat Template Penyakit",
-      description: "Tambah template diet untuk penyakit baru",
+      title: "Kebutuhan Gizi Pasien",
+      description: "Kelola kebutuhan kalori dan gizi setiap jenis pasien",
       link: "/admin/disease-template",
       icon: "🦠",
       color: "#e83e8c",
-      action: "Buat Template"
+      action: "Kelola Gizi"
     },
     {
       title: "Assign ke Pasien",
@@ -83,6 +83,14 @@ export default function AdminDashboard() {
       icon: "🍽️",
       color: "#28a745",
       action: "Add Food"
+    },
+    {
+      title: "Manajemen Resep",
+      description: "Kelola resep makanan untuk pasien",
+      link: "/admin/resep-management",
+      icon: "📖",
+      color: "#fd7e14",
+      action: "Manage Resep"
     }
   ];
 
@@ -172,7 +180,7 @@ export default function AdminDashboard() {
               <div className="card-body text-center">
                 <div className="display-6 text-warning mb-2">🦠</div>
                 <h3 className="fw-bold text-warning">{stats.totalTemplates}</h3>
-                <p className="text-muted mb-0">Template Penyakit</p>
+                <p className="text-muted mb-0">Kebutuhan Gizi</p>
               </div>
             </div>
           </div>
@@ -294,7 +302,7 @@ export default function AdminDashboard() {
                     <strong>🍽️ Kelola Makanan:</strong> CRUD data makanan dan upload image
                   </p>
                   <p className="mb-2">
-                    <strong>🦠 Template Penyakit:</strong> Buat template diet per penyakit
+                    <strong>🦠 Kebutuhan Gizi Pasien:</strong> Kelola kebutuhan kalori dan gizi setiap jenis pasien
                   </p>
                   <p className="mb-2">
                     <strong>👤 Assignment Pasien:</strong> Assign template ke pasien
@@ -326,7 +334,7 @@ export default function AdminDashboard() {
                   <div className="col-md-3">
                     <div className="border-end">
                       <h4 className="text-success fw-bold">{stats.totalTemplates}</h4>
-                      <p className="text-muted small mb-0">Disease Templates</p>
+                      <p className="text-muted small mb-0">Kebutuhan Gizi</p>
                     </div>
                   </div>
                   <div className="col-md-3">

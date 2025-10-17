@@ -172,13 +172,13 @@ export default function AdminDiseaseTemplate() {
           <div className="col-12">
             <div className="d-flex justify-content-between align-items-center mb-4">
               <div>
-                <h2 className="fw-bold text-primary">🦠 Template Diet per Penyakit</h2>
+                <h2 className="fw-bold text-primary">🦠 Kebutuhan Kalori & Gizi per Jenis Pasien</h2>
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
                       <Link to="/admin/dashboard">Dashboard</Link>
                     </li>
-                    <li className="breadcrumb-item active">Disease Templates</li>
+                    <li className="breadcrumb-item active">Kebutuhan Gizi Pasien</li>
                   </ol>
                 </nav>
               </div>
@@ -190,7 +190,7 @@ export default function AdminDiseaseTemplate() {
                   className="btn btn-success"
                   onClick={handleAddNew}
                 >
-                  <i className="fas fa-plus"></i> Template Baru
+                  <i className="fas fa-plus"></i> Kebutuhan Gizi Baru
                 </button>
               </div>
             </div>
@@ -207,7 +207,7 @@ export default function AdminDiseaseTemplate() {
               <div className="col-12">
                 <div className="card">
                   <div className="card-header bg-light">
-                    <h5 className="mb-0">📋 {category} ({categoryTemplates.length} templates)</h5>
+                    <h5 className="mb-0">📋 {category} ({categoryTemplates.length} kebutuhan gizi)</h5>
                   </div>
                   <div className="card-body">
                     <div className="row">
@@ -266,7 +266,7 @@ export default function AdminDiseaseTemplate() {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">
-                    {editMode ? 'Edit Disease Template' : 'Buat Template Penyakit Baru'}
+                    {editMode ? 'Edit Kebutuhan Gizi Pasien' : 'Buat Kebutuhan Gizi Pasien Baru'}
                   </h5>
                   <button 
                     type="button" 
@@ -343,7 +343,7 @@ export default function AdminDiseaseTemplate() {
                     </div>
 
                     {/* Weekly Template */}
-                    <h6 className="fw-bold mb-3">📅 Template Kalori Mingguan (per kg berat badan)</h6>
+                    <h6 className="fw-bold mb-3">📅 Kebutuhan Kalori Mingguan (per kg berat badan)</h6>
                     <div className="table-responsive">
                       <table className="table table-bordered">
                         <thead className="table-primary">
@@ -449,7 +449,7 @@ export default function AdminDiseaseTemplate() {
                       Cancel
                     </button>
                     <button type="submit" className="btn btn-primary">
-                      {editMode ? 'Update Template' : 'Buat Template'}
+                      {editMode ? 'Update Kebutuhan Gizi' : 'Buat Kebutuhan Gizi'}
                     </button>
                   </div>
                 </form>

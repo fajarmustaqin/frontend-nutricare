@@ -5,6 +5,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import Layout from "../layouting/Layout";
 import { Doughnut } from "react-chartjs-2";
 import "../style/PieChart.css";
+import "../style/HomeLogin.css";
 import { Link } from "react-router-dom";
 import { getTracking } from "../redux/actions/action.tracking";
 
@@ -127,282 +128,303 @@ export default function HomeLogin() {
 		dispatch(getResep());
 	}, [dispatch, UserLoading]);
 
+	// Calculate nutrition data
+	const currentCalories = HistoryState.tracking?.tracking?.totKalori || 0;
+	const targetCalories = User?.kaloriYgDibutuhkan || 2000;
+	const caloriePercentage = Math.min(Math.round((currentCalories / targetCalories) * 100), 100);
+	
+	const currentCarbs = HistoryState.tracking?.totKarbohidrat || 0;
+	const targetCarbs = User?.gizi?.karbohidrat || 300;
+	const carbsPercentage = Math.min(Math.round((currentCarbs / targetCarbs) * 100), 100);
+	
+	const currentProtein = HistoryState.tracking?.totProtein || 0;
+	const targetProtein = User?.gizi?.protein || 75;
+	const proteinPercentage = Math.min(Math.round((currentProtein / targetProtein) * 100), 100);
+	
+	const currentFat = HistoryState.tracking?.totLemak || 0;
+	const targetFat = User?.gizi?.lemak || 67;
+	const fatPercentage = Math.min(Math.round((currentFat / targetFat) * 100), 100);
+
 	return (
 		<Layout>
 			{UserLoading ? (
 				<LoadingComponent />
 			) : (
-				<div className="container">
-					<div
-						className="mt-4 rounded d-flex justify-content-between main-bg"
-						style={{
-							height: "250px",
-						}}
-					>
-						<div>
-							<h1 className="text-white fw-bold mt-4 ms-3">
-								Halo, {User?.nama || 'User'}
+				<div className="container py-4 fade-in-up">
+					{/* Modern Hero Section */}
+					<div className="hero-modern">
+						<div className="hero-content">
+							<div className="row align-items-center">
+								<div className="col-md-8">
+									<h1 className="hero-title">
+										👋 Halo, {User?.nama || 'User'}!
 							</h1>
-							<h4 className="text-white mt-3 ms-3">Apa kabar?</h4>
+									<p className="hero-subtitle">
+										Apa kabar? Mari kita pantau nutrisi anda hari ini
+									</p>
+									<div className="hero-stats">
+										<div className="hero-stat-item">
+											<div className="hero-stat-label">Target Kalori</div>
+											<div className="hero-stat-value">{targetCalories.toFixed(0)} <small style={{fontSize: '0.6em'}}>kcal</small></div>
+										</div>
+										<div className="hero-stat-item">
+											<div className="hero-stat-label">Terpenuhi</div>
+											<div className="hero-stat-value">{caloriePercentage}%</div>
+										</div>
+										<div className="hero-stat-item">
+											<div className="hero-stat-label">Tracking Hari Ini</div>
+											<div className="hero-stat-value">{currentCalories.toFixed(0)} <small style={{fontSize: '0.6em'}}>kcal</small></div>
+										</div>
+									</div>
 						</div>
+								<div className="col-md-4 d-none d-md-flex justify-content-center">
 						<img
 							src="https://i.ibb.co/xzBt8gh/Mesa-de-trabajo-1-EAT-3.png"
-							alt="Icon"
-							className="img-fluid d-none d-md-block"
+										alt="Nutrition Icon"
+										style={{ maxHeight: '200px', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))' }}
 						/>
+								</div>
+							</div>
+						</div>
 					</div>
-					<div className="d-flex justify-content-between">
-						<h4 className="mt-4">Penghitung Nutrisi</h4>
-						<Link className="mt-4 text-decoration-none" to="/tracking-nutrisi">
-							Ringkasan
+
+					{/* Nutrition Tracking Section */}
+					<div className="nutrition-section">
+						<div className="d-flex justify-content-between align-items-center mb-4">
+							<h2 className="section-title">
+								<span>📊</span> Tracking Nutrisi Hari Ini
+							</h2>
+							<Link to="/tracking-nutrisi" className="btn btn-outline-primary rounded-pill px-4">
+								<i className="fas fa-chart-line me-2"></i>
+								Lihat Detail
 						</Link>
 					</div>
 
-					<div className="container ">
-						<div className="d-flex justify-content-betweeen row">
-							<div className="col-12 col-lg-6">
-								<div
-									className="row h-100 shadow p-4 "
-									style={{ borderRadius: "5px" }}
-								>
-									<div className="col-6 col-md-5 col-lg-8">
-										<div className="div1">
-											<Doughnut
-												data={
-													UserLoading
-														? data(0, 100)
-														: HistoryState.tracking &&
-														  HistoryState.tracking.tracking
-														? data(
-																HistoryState.tracking.tracking.totKalori,
-																(User?.kaloriYgDibutuhkan || 0).toFixed(0)
-														  )
-														: data(0, 100)
-												}
-												id="stacked1"
-												options={options()}
-											/>
-											<Doughnut data={data1} options={options1} id="stacked" />
-											<div id="stacked" className="m-auto">
-												{UserLoading ? (
-													<div>
-														<h1 className="d-none d-md-block">0%</h1>
-														<h5 className="d-block d-md-none">0%</h5>
+						{/* Nutrition Cards Grid */}
+						<div className="nutrition-grid">
+							{/* Calorie Card */}
+							<div className="nutrition-card" style={{'--card-color': '#667eea'}}>
+								<div className="nutrition-card-header">
+									<div className="nutrition-icon" style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+										🔥
 													</div>
-												) : HistoryState.tracking &&
-												  HistoryState.tracking.tracking ? (
-													<div>
-														<h1 className="d-none d-md-block">
-															{(
-																(HistoryState.tracking.tracking.totKalori /
-																	(User?.kaloriYgDibutuhkan || 1).toFixed(0)) *
-																100
-															).toFixed(0) > 100
-																? 100
-																: (
-																		(HistoryState.tracking.tracking.totKalori /
-																			(User?.kaloriYgDibutuhkan || 1).toFixed(0)) *
-																		100
-																  ).toFixed(0)}{" "}
-															%
-														</h1>
-														<h5 className="d-block d-md-none">
-															{(
-																(HistoryState.tracking.tracking.totKalori /
-																	(User?.kaloriYgDibutuhkan || 1).toFixed(0)) *
-																100
-															).toFixed(0) > 100
-																? 100
-																: (
-																		(HistoryState.tracking.tracking.totKalori /
-																			(User?.kaloriYgDibutuhkan || 1).toFixed(0)) *
-																		100
-																  ).toFixed(0)}{" "}
-															%
-														</h5>
+									<div className="nutrition-percentage">{caloriePercentage}%</div>
 													</div>
-												) : (
-													<div>
-														<h1 className="d-none d-md-block">0%</h1>
-														<h5 className="d-block d-md-none">0%</h5>
+								<div className="nutrition-title">Kalori</div>
+								<div className="nutrition-progress">
+									<div 
+										className="nutrition-progress-bar" 
+										style={{
+											width: `${caloriePercentage}%`,
+											background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)'
+										}}
+									></div>
 													</div>
-												)}
-												{/* {HistoryState.tracking &&
-												HistoryState.tracking.tracking ? (
-													<h1>{persenkalori > 100 ? 100 : persenkalori} %</h1>
-												) : (
-													<h1>0 %</h1>
-												)} */}
+								<div className="nutrition-values">
+									<span className="value-current">{currentCalories.toFixed(0)} kcal</span>
+									<span className="value-target">/ {targetCalories.toFixed(0)} kcal</span>
 											</div>
 										</div>
+
+							{/* Carbs Card */}
+							<div className="nutrition-card" style={{'--card-color': '#f093fb'}}>
+								<div className="nutrition-card-header">
+									<div className="nutrition-icon" style={{background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'}}>
+										🍞
 									</div>
-							<div className="col-6 col-md-7 col-lg-4 d-flex justify-content-evenly justify-content-lg-end mmt-0 mt-md-4 ">
-								<div>
-									<h5 className="text-danger">Dibutuhkan</h5>
-									<h5>
-										{UserLoading ? 0 : (User?.kaloriYgDibutuhkan || 0).toFixed(0)}{" "}
-										Kkal
-									</h5>
-									<h5 className="text-primary mt-5">Terpenuhi</h5>
-									<h5>
-										{loading
-											? 0
-											: HistoryState.tracking &&
-											  HistoryState.tracking.tracking
-											? HistoryState.tracking.tracking.totKalori
-											: 0}{" "}
-										Kkal
-									</h5>
+									<div className="nutrition-percentage">{carbsPercentage}%</div>
+								</div>
+								<div className="nutrition-title">Karbohidrat</div>
+								<div className="nutrition-progress">
+									<div 
+										className="nutrition-progress-bar" 
+										style={{
+											width: `${carbsPercentage}%`,
+											background: 'linear-gradient(90deg, #f093fb 0%, #f5576c 100%)'
+										}}
+									></div>
+								</div>
+								<div className="nutrition-values">
+									<span className="value-current">{currentCarbs.toFixed(1)} g</span>
+									<span className="value-target">/ {targetCarbs.toFixed(1)} g</span>
+								</div>
+										</div>
+
+							{/* Protein Card */}
+							<div className="nutrition-card" style={{'--card-color': '#4facfe'}}>
+								<div className="nutrition-card-header">
+									<div className="nutrition-icon" style={{background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'}}>
+										🥩
+									</div>
+									<div className="nutrition-percentage">{proteinPercentage}%</div>
+								</div>
+								<div className="nutrition-title">Protein</div>
+								<div className="nutrition-progress">
+									<div 
+										className="nutrition-progress-bar" 
+										style={{
+											width: `${proteinPercentage}%`,
+											background: 'linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)'
+										}}
+									></div>
+								</div>
+								<div className="nutrition-values">
+									<span className="value-current">{currentProtein.toFixed(1)} g</span>
+									<span className="value-target">/ {targetProtein.toFixed(1)} g</span>
 								</div>
 							</div>
+
+							{/* Fat Card */}
+							<div className="nutrition-card" style={{'--card-color': '#43e97b'}}>
+								<div className="nutrition-card-header">
+									<div className="nutrition-icon" style={{background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'}}>
+										🥑
+									</div>
+									<div className="nutrition-percentage">{fatPercentage}%</div>
 								</div>
-							</div>
-							<div className="d-none d-lg-block col-lg-6">
-								<div className="custom-row h-100 w-100">
-									<StatsProfile
-										grid={"item-1"}
-										angka={
-											loading
-												? "0 gr"
-												: HistoryState.tracking?.totKarbohidrat
-												? (HistoryState.tracking.totKarbohidrat || 0).toFixed(1) +
-												  " gr"
-												: "0 gr"
-										}
-										colors={"#FFECB3"}
-										image={
-											"https://cdn-icons-png.flaticon.com/128/575/575435.png"
-										}
-										nutrisi={"Karbohidrat"}
-									></StatsProfile>
-									<StatsProfile
-										grid={"item-2"}
-										angka={
-											loading
-												? "0 gr"
-												: HistoryState.tracking?.totProtein
-												? (HistoryState.tracking.totProtein || 0).toFixed(1) + " gr"
-												: "0 gr"
-										}
-										colors={"#8CD2F5"}
-										image={
-											"https://cdn-icons-png.flaticon.com/128/1046/1046825.png"
-										}
-										nutrisi={"Protein"}
-									></StatsProfile>
-									<StatsProfile
-										grid={"item-3"}
-										angka={
-											loading
-												? "0 gr"
-												: HistoryState.tracking?.totLemak
-												? (HistoryState.tracking.totLemak || 0).toFixed(1) + " gr"
-												: "0 gr"
-										}
-										colors={"#F89D89"}
-										image={
-											"https://cdn-icons-png.flaticon.com/128/2553/2553591.png"
-										}
-										nutrisi={"Lemak"}
-									></StatsProfile>
-									<StatsProfile
-										grid={"item-4"}
-										angka={
-											loading
-												? "0 kg"
-												: HistoryState.tracking?.tracking?.totKarbon
-												? (HistoryState.tracking.tracking.totKarbon || 0).toFixed(1) +
-												  " kg"
-												: "0 kg"
-										}
-										colors={"#E1E1E1"}
-										image={
-											"https://cdn-icons-png.flaticon.com/128/1890/1890036.png"
-										}
-										nutrisi={"Karbondioksida"}
-									></StatsProfile>
+								<div className="nutrition-title">Lemak</div>
+								<div className="nutrition-progress">
+									<div 
+										className="nutrition-progress-bar" 
+										style={{
+											width: `${fatPercentage}%`,
+											background: 'linear-gradient(90deg, #43e97b 0%, #38f9d7 100%)'
+										}}
+									></div>
+								</div>
+								<div className="nutrition-values">
+									<span className="value-current">{currentFat.toFixed(1)} g</span>
+									<span className="value-target">/ {targetFat.toFixed(1)} g</span>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div className=" mt-4">
-						<div className=" my-2 d-flex justify-content-between">
-							{/* <h4>Resep</h4>
-							<Link className="text-decoration-none" to="/resep">
-								Lihat Semua
-							</Link> */}
+					{/* Quick Actions */}
+					<div className="mt-5">
+						<h2 className="section-title mb-4">
+							<span>⚡</span> Quick Actions
+						</h2>
+						<div className="quick-actions">
+							<Link to="/pilih-makanan" className="action-card" style={{'--action-color': '#667eea'}}>
+								<div className="action-icon" style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+									🍽️
+								</div>
+								<div className="action-title">Pilih Makanan</div>
+								<div className="action-description">Tambah makanan ke tracking harian</div>
+							</Link>
+
+							<Link to="/rekomendasi" className="action-card" style={{'--action-color': '#f093fb'}}>
+								<div className="action-icon" style={{background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'}}>
+									⭐
+								</div>
+								<div className="action-title">Rekomendasi</div>
+								<div className="action-description">Dapatkan saran makanan sehat</div>
+							</Link>
+
+							<Link to="/tracking-nutrisi" className="action-card" style={{'--action-color': '#4facfe'}}>
+								<div className="action-icon" style={{background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'}}>
+									📊
+								</div>
+								<div className="action-title">History Tracking</div>
+								<div className="action-description">Lihat riwayat nutrisi anda</div>
+							</Link>
+
+							<Link to="/karbon" className="action-card" style={{'--action-color': '#43e97b'}}>
+								<div className="action-icon" style={{background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'}}>
+									🌱
+								</div>
+								<div className="action-title">Dampak Karbon</div>
+								<div className="action-description">Pantau jejak karbon makanan</div>
+							</Link>
 						</div>
 					</div>
 
-					<div className="mt-4 mb-5">
-						<h4>Rekomendasi Makanan</h4>
-						<div className="custom-row-2">
+					{/* Meal Time Recommendations */}
+					<div className="mt-5">
+						<h2 className="section-title mb-4">
+							<span>🍴</span> Rekomendasi Waktu Makan
+						</h2>
+						<div className="row g-3">
+							<div className="col-md-4">
 							<Link
 								to="/rekomendasi#sarapan"
-								className="newitem-1 text-black text-decoration-none shadow p-4 d-flex flex-column"
-							>
-								<img
-									src="https://cdn-icons-png.flaticon.com/128/3068/3068777.png"
-									height={"70px"}
-									className="ms-auto me-auto"
-									alt="sarapan"
-								/>
-								<h6 className="text-center mt-3">Sarapan</h6>
+									className="action-card h-100"
+									style={{'--action-color': '#ffa726'}}
+								>
+									<div className="action-icon" style={{background: 'linear-gradient(135deg, #ffa726 0%, #fb8c00 100%)'}}>
+										☀️
+									</div>
+									<div className="action-title">Sarapan</div>
+									<div className="action-description">07:00 - 09:00</div>
 							</Link>
+							</div>
+							<div className="col-md-4">
 							<Link
 								to="/rekomendasi#makansiang"
-								className="newitem-2 text-black text-decoration-none shadow p-4 d-flex flex-column"
-							>
-								<img
-									src="https://cdn-icons-png.flaticon.com/128/2718/2718265.png"
-									height={"70px"}
-									className="ms-auto me-auto"
-									alt="makansiang"
-								/>
-								<h6 className="text-center mt-3">Makan Siang</h6>
+									className="action-card h-100"
+									style={{'--action-color': '#ef5350'}}
+								>
+									<div className="action-icon" style={{background: 'linear-gradient(135deg, #ef5350 0%, #e53935 100%)'}}>
+										🌤️
+									</div>
+									<div className="action-title">Makan Siang</div>
+									<div className="action-description">12:00 - 14:00</div>
 							</Link>
+							</div>
+							<div className="col-md-4">
 							<Link
 								to="/rekomendasi#makanmalam"
-								className="newitem-3 text-black text-decoration-none shadow p-4 d-flex flex-column"
-							>
-								<img
-									src="https://cdn-icons-png.flaticon.com/128/4336/4336872.png"
-									height={"70px"}
-									className="ms-auto me-auto"
-									alt="makanmalam"
-								/>
-								<h6 className="text-center mt-3">Makan Malam</h6>
+									className="action-card h-100"
+									style={{'--action-color': '#5c6bc0'}}
+								>
+									<div className="action-icon" style={{background: 'linear-gradient(135deg, #5c6bc0 0%, #3f51b5 100%)'}}>
+										🌙
+									</div>
+									<div className="action-title">Makan Malam</div>
+									<div className="action-description">18:00 - 20:00</div>
 							</Link>
+							</div>
 						</div>
 					</div>
 
-					<div className=" mt-4">
-						<div className=" my-2 d-flex justify-content-between">
-							<h4>Resep</h4>
-							<Link className="text-decoration-none" to="/resep">
+					{/* Recipe Section */}
+					<div className="recipe-section mt-5 mb-5">
+						<div className="recipe-header">
+							<h2 className="section-title">
+								<span>📖</span> Resep Populer
+							</h2>
+							<Link to="/resep" className="btn btn-outline-primary rounded-pill px-4">
+								<i className="fas fa-book me-2"></i>
 								Lihat Semua
 							</Link>
 						</div>
 
-						<div className="row justify-content-center gy-3">
-							{!resepLoading
-								? resep.slice(-3).map((data) => (
-										<div className="col-12 col-md-4">
+						<div className="recipe-grid">
+							{!resepLoading && resep?.length > 0
+								? resep.slice(-3).map((data, index) => (
+										<div key={data._id} className="fade-in-up" style={{animationDelay: `${index * 0.1}s`}}>
 											<Link
 												className="pointer text-decoration-none"
 												to={`/resep/detail/${data._id}`}
 											>
 												<CardResep
-													imageUrl={data.idMakanan.image}
-													kalori={data.idMakanan.kaloriMakanan}
-													karbon={data.idMakanan.karbon}
-													title={data.idMakanan.makanan}
+													imageUrl={data.idMakanan?.image}
+													kalori={data.idMakanan?.kaloriMakanan}
+													karbon={data.idMakanan?.karbon}
+													title={data.idMakanan?.makanan}
 													key={data._id}
 												></CardResep>
 											</Link>
 										</div>
 								  ))
-								: null}
+								: (
+									<div className="col-12 text-center py-5">
+										<p className="text-muted">Belum ada resep tersedia</p>
+										<Link to="/resep" className="btn btn-primary mt-2">
+											Jelajahi Resep
+										</Link>
+									</div>
+								)}
 						</div>
 					</div>
 				</div>

@@ -143,12 +143,6 @@ export default function Header() {
 												</Link>
 											</li>
 										)}
-										<li>
-											<Link className="dropdown-item" to="/akun">
-												<i className="fas fa-cog me-2"></i>
-												Account Settings
-											</Link>
-							</li>
 										<li><hr className="dropdown-divider"/></li>
 										<li>
 											<button 
@@ -269,7 +263,7 @@ export default function Header() {
 				</div>
 
 			{/* Navbar Styles */}
-			<style jsx>{`
+			<style>{`
 				.navbar {
 					backdrop-filter: blur(20px);
 					-webkit-backdrop-filter: blur(20px);
@@ -365,6 +359,26 @@ export default function Header() {
 					height: 35px;
 					background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 					color: white;
+				}
+				
+				.dropdown-toggle {
+					color: white !important;
+					transition: all 0.3s ease;
+				}
+				
+				.dropdown-toggle:hover {
+					color: #667eea !important;
+					background: rgba(255, 255, 255, 0.1) !important;
+					border-radius: 8px;
+				}
+				
+				.navbar-scrolled .dropdown-toggle {
+					color: #333 !important;
+				}
+				
+				.navbar-scrolled .dropdown-toggle:hover {
+					color: #667eea !important;
+					background: rgba(102, 126, 234, 0.1) !important;
 				}
 				
 				.glass-dropdown {

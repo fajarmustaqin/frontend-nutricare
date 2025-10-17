@@ -23,7 +23,7 @@ export default function AdminSidebar() {
       badge: "CRUD"
     },
     {
-      title: "Template Penyakit",
+      title: "Kebutuhan Gizi Pasien",
       icon: "fas fa-virus",
       path: "/admin/disease-template",
       color: "#e83e8c",
@@ -44,7 +44,7 @@ export default function AdminSidebar() {
     {
       title: "Manajemen Resep",
       icon: "fas fa-book",
-      path: "/resep",
+      path: "/admin/resep-management",
       color: "#17a2b8"
     },
     {
