@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import AdminLayout from "../layouting/AdminLayout";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getCookie } from "../helpers";
 import axios from "axios";
 

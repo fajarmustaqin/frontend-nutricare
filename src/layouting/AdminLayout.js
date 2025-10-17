@@ -52,18 +52,18 @@ export default function AdminLayout({ children }) {
                 </button>
                 <ul className="dropdown-menu dropdown-menu-end">
                   <li><h6 className="dropdown-header">Notifications</h6></li>
-                  <li><a className="dropdown-item" href="#">
+                  <li><button className="dropdown-item">
                     <i className="fas fa-user-plus text-success me-2"></i>
                     New patient registered
-                  </a></li>
-                  <li><a className="dropdown-item" href="#">
+                  </button></li>
+                  <li><button className="dropdown-item">
                     <i className="fas fa-calendar text-warning me-2"></i>
                     Diet plan expiring soon
-                  </a></li>
-                  <li><a className="dropdown-item" href="#">
+                  </button></li>
+                  <li><button className="dropdown-item">
                     <i className="fas fa-chart-line text-info me-2"></i>
                     Weekly report ready
-                  </a></li>
+                  </button></li>
                 </ul>
               </div>
 

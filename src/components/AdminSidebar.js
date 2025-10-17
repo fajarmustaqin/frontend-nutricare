@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getCookie } from "../helpers";
 
 export default function AdminSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
